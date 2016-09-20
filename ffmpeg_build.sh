@@ -24,6 +24,7 @@ make clean
 --sysroot="$NDK_SYSROOT" \
 --enable-pic \
 --enable-libx264 \
+--enable-libopencore-amrnb \
 --enable-libass \
 --enable-libfreetype \
 --enable-libfribidi \
