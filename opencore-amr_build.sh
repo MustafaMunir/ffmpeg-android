@@ -6,14 +6,16 @@ pushd opencore-amr-0.1.3
 
 make clean
 
+LDFLAGS= "-Wl,-rpath-link=${TOOLCHAIN_PREFIX}/lib -L${TOOLCHAIN_PREFIX}/lib $LDFLAGS"
+
 ./configure \
+  --with-pic \
   --with-sysroot="$NDK_SYSROOT" \
   --host="$NDK_TOOLCHAIN_ABI" \
   --enable-static \
   --disable-shared \
-  --build=arm-linux \
   --prefix="${TOOLCHAIN_PREFIX}" || exit 1
 
-make -j${NUMBER_OF_CORES} install || exit 1
+make -j${NUMBER_OF_CORES} && make install || exit 1
 
 popd

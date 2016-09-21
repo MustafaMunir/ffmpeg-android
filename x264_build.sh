@@ -15,6 +15,9 @@ case $1 in
   ;;
 esac
 
+#  --extra-cflags="-DANDROID $CFLAGS" \
+#  --extra-ldflags="-Wl,-rpath-link=${TOOLCHAIN_PREFIX}/lib -L${TOOLCHAIN_PREFIX}/lib $LDFLAGS" \
+
 echo $CFLAGS
 
 ./configure \
@@ -24,7 +27,7 @@ echo $CFLAGS
   --enable-pic \
   --disable-asm \
   --enable-static \
-  --disable-shared \
+  --enable-shared \
   --prefix="${TOOLCHAIN_PREFIX}" \
   --disable-cli || exit 1
 
