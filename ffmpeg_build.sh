@@ -24,6 +24,8 @@ esac
 
 echo $LDFLAGS
 
+#: <<'END'
+
 make clean
 
 ./configure \
@@ -77,6 +79,17 @@ make clean
 --extra-libs="-lgcc -lpng -lexpat -lopencore-amrnb -lm -lc -lz -ldl -llog" \
 --extra-cxxflags="$CXX_FLAGS" || exit 1
 
+#END
+
 make -j${NUMBER_OF_CORES} && make install || exit 1
+
+${CROSS_PREFIX}ar d libavcodec/libavcodec.a inverse.o || exit 1
+${CROSS_PREFIX}ar d libavcodec/libavcodec.a golomb.o || exit 1
+${CROSS_PREFIX}ar d libavcodec/libavcodec.a reverse.o || exit 1
+${CROSS_PREFIX}ar d libavcodec/libavcodec.a log2_tab.o || exit 1
+${CROSS_PREFIX}ar d libavutil/libavutil.a log2_tab.o  || exit 1
+${CROSS_PREFIX}ar d libswresample/libswresample.a log2_tab.o  || exit 1
+
+${CROSS_PREFIX}ld -rpath-link=${TOOLCHAIN_PREFIX}/lib -L${TOOLCHAIN_PREFIX}/lib -L${NDK_SYSROOT}/usr/lib -soname libffmpeg.so -shared -nostdlib -z noexecstack -Bsymbolic --whole-archive --no-undefined -o ${2}/build/${1}/libffmpeg.so libavcodec/libavcodec.a libavformat/libavformat.a libavutil/libavutil.a libswresample/libswresample.a ${TOOLCHAIN_PREFIX}/lib/libopencore-amrnb.a ${TOOLCHAIN_PREFIX}/lib/libmp3lame.a -lc -lm -lz -ldl -llog -lpng -lexpat -lx264 --dynamic-linker=/system/bin/linker ${LIB_GCC} || exit 1
 
 popd
