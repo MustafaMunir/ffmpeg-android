@@ -26,6 +26,12 @@ do
   ./libass_build.sh $i $BASEDIR 1 || exit 1
   ./lame_build.sh $i $BASEDIR 1 || exit 1
   ./ffmpeg_build.sh $i $BASEDIR 0 || exit 1
+
+  # Copy opencore-amr header files.
+  cp -a ${TOOLCHAIN_PREFIX}/include/opencore-* ${BASEDIR}/build/${i}/include/
+  # Copy x264 header files.
+  cp ${TOOLCHAIN_PREFIX}/include/x264*.h ${BASEDIR}/build/${i}/include/
+  
 done
 
-# rm -rf ${TOOLCHAIN_PREFIX}
+rm -rf ${TOOLCHAIN_PREFIX}

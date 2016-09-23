@@ -17,6 +17,8 @@ esac
 
 #  --extra-cflags="-DANDROID $CFLAGS" \
 #  --extra-ldflags="-Wl,-rpath-link=${TOOLCHAIN_PREFIX}/lib -L${TOOLCHAIN_PREFIX}/lib $LDFLAGS" \
+#   --enable-shared \
+#   --prefix="${2}/build/${1}" \
 
 echo $CFLAGS
 
@@ -27,7 +29,7 @@ echo $CFLAGS
   --enable-pic \
   --disable-asm \
   --enable-static \
-  --enable-shared \
+  --disable-symver \
   --prefix="${TOOLCHAIN_PREFIX}" \
   --disable-cli || exit 1
 

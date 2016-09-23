@@ -5,6 +5,7 @@ libpng-*
 expat-*
 fribidi-*
 lame-*
+opencore-amr-*
 
 # Created by http://www.gitignore.io
 

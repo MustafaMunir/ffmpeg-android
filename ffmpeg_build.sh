@@ -20,7 +20,8 @@ esac
 # --extra-libs="-lpng -lexpat -lm -lgcc" \
 # -soname libffmpeg.so -shared -nostdlib -z,noexecstack -Bsymbolic --whole-archive --no-undefined -o libffmpeg.so --warn-once -Wl,-rpath-link=${TOOLCHAIN_PREFIX}/lib
 
-# Investigate these options : --disable-network \ --disable-neon \ --disable-debug \ --disable-stripping \
+# Investigate these options : --disable-debug \ --disable-stripping \
+# Removing these --disable-neon \ --disable-network \
 
 echo $LDFLAGS
 
@@ -67,15 +68,13 @@ make clean
 --disable-ffmpeg \
 --disable-avdevice \
 --disable-symver \
---disable-network \
---disable-neon \
 --disable-debug \
 --disable-stripping \
 --enable-cross-compile \
 --pkg-config="${2}/ffmpeg-pkg-config" \
 --prefix="${2}/build/${1}" \
---extra-cflags="-I${TOOLCHAIN_PREFIX}/include $CFLAGS" \
---extra-ldflags="-Wl,-rpath-link=${TOOLCHAIN_PREFIX}/lib -L${TOOLCHAIN_PREFIX}/lib $LDFLAGS" \
+--extra-cflags="-I${TOOLCHAIN_PREFIX}/include -I${2}/build/${1}/include $CFLAGS" \
+--extra-ldflags="-Wl,-rpath-link=${TOOLCHAIN_PREFIX}/lib -Wl,-rpath-link=${2}/build/${1}/lib -L${TOOLCHAIN_PREFIX}/lib -L${2}/build/${1}/lib $LDFLAGS" \
 --extra-libs="-lgcc -lpng -lexpat -lopencore-amrnb -lm -lc -lz -ldl -llog" \
 --extra-cxxflags="$CXX_FLAGS" || exit 1
 
@@ -89,7 +88,11 @@ ${CROSS_PREFIX}ar d libavcodec/libavcodec.a reverse.o || exit 1
 ${CROSS_PREFIX}ar d libavcodec/libavcodec.a log2_tab.o || exit 1
 ${CROSS_PREFIX}ar d libavutil/libavutil.a log2_tab.o  || exit 1
 ${CROSS_PREFIX}ar d libswresample/libswresample.a log2_tab.o  || exit 1
+${CROSS_PREFIX}ar d libswscale/libswscale.a log2_tab.o  || exit 1
 
-${CROSS_PREFIX}ld -rpath-link=${TOOLCHAIN_PREFIX}/lib -L${TOOLCHAIN_PREFIX}/lib -L${NDK_SYSROOT}/usr/lib -soname libffmpeg.so -shared -nostdlib -z noexecstack -Bsymbolic --whole-archive --no-undefined -o ${2}/build/${1}/libffmpeg.so libavcodec/libavcodec.a libavformat/libavformat.a libavutil/libavutil.a libswresample/libswresample.a ${TOOLCHAIN_PREFIX}/lib/libopencore-amrnb.a ${TOOLCHAIN_PREFIX}/lib/libmp3lame.a -lc -lm -lz -ldl -llog -lpng -lexpat -lx264 --dynamic-linker=/system/bin/linker ${LIB_GCC} || exit 1
+# ${2}/build/${1}
+
+${CROSS_PREFIX}ld -rpath-link=${TOOLCHAIN_PREFIX}/lib -L${TOOLCHAIN_PREFIX}/lib -L${NDK_SYSROOT}/usr/lib -soname libffmpeg.so -shared -nostdlib -z noexecstack -Bsymbolic --whole-archive --no-undefined -o ${2}/build/${1}/lib/libffmpeg.so libavcodec/libavcodec.a libavformat/libavformat.a libswscale/libswscale.a libavutil/libavutil.a libswresample/libswresample.a ${TOOLCHAIN_PREFIX}/lib/libexpat.a ${TOOLCHAIN_PREFIX}/lib/libpng.a ${TOOLCHAIN_PREFIX}/lib/libx264.a ${TOOLCHAIN_PREFIX}/lib/libopencore-amrnb.a ${TOOLCHAIN_PREFIX}/lib/libmp3lame.a -lc -lm -lz -ldl -llog --dynamic-linker=/system/bin/linker ${LIB_GCC} || exit 1
+
 
 popd

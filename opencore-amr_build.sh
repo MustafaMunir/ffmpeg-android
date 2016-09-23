@@ -6,6 +6,8 @@ pushd opencore-amr-0.1.3
 
 make clean
 
+#   --prefix="${2}/build/${1}" \
+
 LDFLAGS= "-Wl,-rpath-link=${TOOLCHAIN_PREFIX}/lib -L${TOOLCHAIN_PREFIX}/lib $LDFLAGS"
 
 ./configure \
